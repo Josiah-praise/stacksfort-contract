@@ -6,12 +6,38 @@
 ;;   - restrict-assets? (Issue #7) - Post-conditions for token transfers
 ;;   - stacks-block-time (Issue #15) - Transaction expiration
 ;;   - contract-hash? (Issue #7) - Token contract verification
-;;   - to-ascii? (Issues #2, #6, #7) - Enhanced logging
+   ;;   - to-ascii? (Issues #2, #6, #7) - Enhanced logging
 
 ;; SIP-010 trait import - will be used for token transfers
 ;; Note: Trait syntax will be fixed when implementing Issue #7 (token transfers)
 ;; (use-trait sip-010-trait-ft-standard 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard)
 
+;; ============================================
+;; ========== temp test ==========
+;; Temporary counter state for testing
+(define-data-var counter uint u0)
+
+(define-public (increment-counter)
+    (begin
+        (var-set counter (+ (var-get counter) u1))
+        (ok (var-get counter))
+    )
+)
+
+(define-public (decrement-counter)
+    (begin
+        (if (> (var-get counter) u0)
+            (var-set counter (- (var-get counter) u1))
+            (var-set counter u0)
+        )
+        (ok (var-get counter))
+    )
+)
+
+(define-read-only (get-counter)
+    (ok (var-get counter))
+)
+;; ========== temp test ==========
 ;; ============================================
 ;; Constants
 ;; ============================================
