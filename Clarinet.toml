@@ -1,5 +1,5 @@
 [project]
-name = 'multisig-vault'
+name = 'stacks-fort'
 description = 'Multi-signature vault system on Stacks'
 authors = []
 telemetry = true
@@ -8,7 +8,7 @@ cache_dir = './.cache'
 [[project.requirements]]
 contract_id = 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard'
 
-[contracts.multisig]
+[contracts.stacksfort-v1]
 path = 'contracts/multisig.clar'
 clarity_version = 4
 # Using Clarity 4 for mainnet deployment
@@ -27,4 +27,3 @@ callee_filter = false
 [repl.remote_data]
 enabled = false
 api_url = 'https://api.hiro.so'
-
