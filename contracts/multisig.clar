@@ -89,6 +89,15 @@
   bool
 )
 
+;; Helpers for tracking which signers have approved a transaction
+(define-private (txn-signer-key (txn-id uint) (signer principal))
+    (tuple (txn-id txn-id) (signer signer))
+)
+
+(define-private (build-signature-accumulator (txn-id uint) (hash (buff 32)))
+    (tuple (txn-id txn-id) (hash hash) (count u0))
+)
+
 ;; ============================================
 ;; Public Functions
 ;; ============================================
