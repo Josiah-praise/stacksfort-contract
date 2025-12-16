@@ -87,7 +87,7 @@
 )
 
 (define-map txn-signers
-        {
+    {
         txn-id: uint,
         signer: principal,
     }
@@ -99,7 +99,7 @@
         (target-id uint)
         (signer principal)
     )
-        {
+    {
         txn-id: target-id,
         signer: signer,
     }
@@ -109,7 +109,7 @@
         (target-id uint)
         (hash (buff 32))
     )
-        {
+    {
         txn-id: target-id,
         hash: hash,
         count: u0,
@@ -154,6 +154,7 @@
         (amount uint)
         (recipient principal)
         (token (optional principal))
+        (expiration (optional uint))
     )
     (begin
         ;; Verify contract is initialized
@@ -176,25 +177,30 @@
             )
             ;; Get current txn-id from storage
             (let ((current-id (var-get txn-id)))
-                ;; Store transaction in transactions map
-                (map-set transactions current-id {
-                    type: txn-type,
-                    amount: amount,
-                    recipient: recipient,
-                    token: token,
-                    executed: false,
-                })
-                ;; Increment txn-id by 1
-                (var-set txn-id (+ current-id u1))
-                ;; Print transaction details for logging
-                (print {
-                    txn-id: current-id,
-                    type: txn-type,
-                    amount: amount,
-                    recipient: recipient,
-                    token: token,
-                })
-                (ok current-id)
+                ;; Calculate expiration (default 1008 blocks ~7 days if none)
+                (let ((expiry (default-to (+ block-height u1008) expiration)))
+                    ;; Store transaction in transactions map
+                    (map-set transactions current-id {
+                        type: txn-type,
+                        amount: amount,
+                        recipient: recipient,
+                        token: token,
+                        executed: false,
+                        expiration: expiry,
+                    })
+                    ;; Increment txn-id by 1
+                    (var-set txn-id (+ current-id u1))
+                    ;; Print transaction details for logging
+                    (print {
+                        txn-id: current-id,
+                        type: txn-type,
+                        amount: amount,
+                        recipient: recipient,
+                        token: token,
+                        expiration: expiry,
+                    })
+                    (ok current-id)
+                )
             )
         )
     )
@@ -242,7 +248,7 @@
                 accumulator
                 (begin
                     (map-set txn-signers key true)
-                                        {
+                    {
                         txn-id: (get txn-id accumulator),
                         hash: (get hash accumulator),
                         count: (+ (get count accumulator) u1),
